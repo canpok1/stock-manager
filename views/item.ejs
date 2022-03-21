@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在庫管理 | 在庫詳細</title>
+</head>
+
+<body>
+
+<div id="detail" data-item-no="<%=itemNo %>">
+    <div class="item-no"></div>
+    <div class="item-name"></div>
+    <div class="item-status"></div>
+    <div class="item-rule"></div>
+</div>
+
+<div id="error"></div>
+
+<div>
+    <button onclick="sendOrderRequest()">発注依頼</button>
+    <button onclick="sendOrderComplete()">発注完了</button>
+</div>
+
+<script src="/js/item.js"></script>
+</body>
+
+</html>

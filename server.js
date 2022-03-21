@@ -4,6 +4,7 @@ const KEY_FILE_NAME = 'service-account.json';
 
 const path = require('path');
 const fs = require('fs');
+const express = require('express');
 
 const SpreadsheetClient = require('./spreadsheet.js');
 
@@ -15,14 +16,42 @@ async function main() {
         fs.writeFileSync(keyFileName, process.env.SERVICE_ACCOUNT_JSON);
         const client = new SpreadsheetClient(keyFileName, process.env.SPREADSHEET_ID);
 
-        const values = await client.getAllItems('消耗品');
-        console.log(values);
+        const app = express();
+        app.set('view engine', 'ejs');
+        app.set('views', 'views');
+        app.use(express.static(`${__dirname}/public`));
 
-        client.updateItem('消耗品', 34, '在庫ルール', 'テスト');
-        client.updateItem('消耗品', 34, '要発注', true);
+        app.get('/items/:itemNo', function (req, res) {
+            res.render('item.ejs', { itemNo: req.params.itemNo });
+        });
 
-        const value = await client.getItem('消耗品', 34);
-        console.log(value);
+        app.get('/api/items', async function (req, res, next) {
+            console.log('received request, endpoint: get ' + req.originalUrl);
+            const values = await client.getAllItems('消耗品');
+            res.json(values);
+        });
+        app.get('/api/items/:itemNo', async function (req, res, next) {
+            console.log('received request, endpoint: get ' + req.originalUrl);
+            const itemNo = Number(req.params.itemNo);
+            const value = await client.getItem('消耗品', itemNo);
+            res.json(value);
+        });
+        app.put('/api/items/:itemNo/order-request', async function (req, res) {
+            console.log('received request, endpoint: put ' + req.originalUrl);
+            const itemNo = Number(req.params.itemNo);
+            client.updateItem('消耗品', itemNo, '要発注', true);
+            res.json({});
+        });
+        app.put('/api/items/:itemNo/order-complete', async function (req, res) {
+            console.log('received request, endpoint: put ' + req.originalUrl);
+            const itemNo = Number(req.params.itemNo);
+            client.updateItem('消耗品', itemNo, '要発注', false);
+            res.json({});
+        });
+
+        var server = app.listen(3000, function () {
+            console.log('Node.js is listening to PORT:' + server.address().port);
+        });
     } catch (e) {
         console.log(e);
     }
