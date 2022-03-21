@@ -8,22 +8,30 @@ function load() {
         .then(data => {
             const nums = document.getElementsByClassName('item-no');
             for (let i = 0; i < nums.length; i++) {
-                nums[i].innerHTML = data.itemNo;
+                nums[i].innerText = 'No:' + data.itemNo;
             }
 
-            const names = document.getElementsByClassName('item-name');
-            for (let i = 0; i < names.length; i++) {
-                names[i].innerHTML = data.name;
+            if (data.name) {
+                const names = document.getElementsByClassName('item-name');
+                for (let i = 0; i < names.length; i++) {
+                    names[i].innerText = data.name;
+                }
             }
 
-            const statuses = document.getElementsByClassName('item-status');
-            for (let i = 0; i < statuses.length; i++) {
-                statuses[i].innerHTML = data.shouldOrder ? '要注文' : '注文済';
+            document.getElementById('detail').dataset.shouldOrder = data.shouldOrder;
+            if (data.shouldOrder) {
+                document.getElementById('order-request-button').disabled = true;
+                document.getElementById('order-complete-button').disabled = false;
+            } else {
+                document.getElementById('order-request-button').disabled = false;
+                document.getElementById('order-complete-button').disabled = true;
             }
 
-            const rules = document.getElementsByClassName('item-rule');
-            for (let i = 0; i < rules.length; i++) {
-                rules[i].innerHTML = data.rule;
+            if (data.rule) {
+                const rules = document.getElementsByClassName('item-rule');
+                for (let i = 0; i < rules.length; i++) {
+                    rules[i].innerHTML = data.rule;
+                }
             }
         })
         .catch(err => {
@@ -50,14 +58,23 @@ function sendOrderComplete() {
 }
 
 function setError(msg, error) {
-    document.getElementById('error').innterHTML = msg;
+    document.getElementById('error-area').innterHTML = msg;
+    document.getElementById('detail').classList.add('error');
     console.error(msg, error);
 }
 function clearError() {
-    document.getElementById('error').innterHTML = '';
+    document.getElementById('error-area').innterHTML = '';
+    document.getElementById('detail').classList.remove('error');
 }
 
 window.onload = () => {
     params.itemNo = document.getElementById('detail').dataset.itemNo;
     load();
+}
+
+document.getElementById('order-request-button').onclick = function () {
+    sendOrderRequest();
+}
+document.getElementById('order-complete-button').onclick = function () {
+    sendOrderComplete();
 }

@@ -1,0 +1,24 @@
+.item-status.badge.order-request {
+    background-color: red;
+}
+.item-status.badge.order-complete {
+    background-color: green;
+}
+#detail[data-should-order="true"] .item-status.order-request {
+    display: inline-block;
+}
+#detail[data-should-order="true"] .item-status.order-complete {
+    display: none;
+}
+#detail[data-should-order="false"] .item-status.order-request {
+    display: none;
+}
+#detail[data-should-order="false"] .item-status.order-complete {
+    display: inline-block;
+}
+#error-area {
+    display: none;
+}
+#detail.error #error-area {
+    display: block;
+}
