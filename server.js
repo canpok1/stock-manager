@@ -16,6 +16,8 @@ async function main() {
         fs.writeFileSync(keyFileName, process.env.SERVICE_ACCOUNT_JSON);
         const client = new SpreadsheetClient(keyFileName, process.env.SPREADSHEET_ID);
 
+        const port = process.env.PORT || 8080;
+
         const app = express();
         app.set('view engine', 'ejs');
         app.set('views', 'views');
@@ -49,7 +51,7 @@ async function main() {
             res.json({});
         });
 
-        var server = app.listen(3000, function () {
+        var server = app.listen(port, function () {
             console.log('Node.js is listening to PORT:' + server.address().port);
         });
     } catch (e) {

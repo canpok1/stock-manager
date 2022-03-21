@@ -4,5 +4,8 @@
     "ejs": "^3.1.6",
     "express": "^4.17.3",
     "googleapis": "^95.0.0"
+  },
+  "scripts": {
+    "start": "node server.js"
   }
 }
